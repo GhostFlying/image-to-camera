@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -29,9 +30,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Intent cameraIntent = getIntent();
         if (cameraIntent.getAction().equals(MediaStore.ACTION_IMAGE_CAPTURE)){
-            Bundle extra = cameraIntent.getExtras();
-            ClipData clipData = cameraIntent.getClipData();
-            outputUri = clipData.getItemAt(0).getUri();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                ClipData clipData = cameraIntent.getClipData();
+                outputUri = clipData.getItemAt(0).getUri();
+            }
+
+            // compatibility for system below lollipop
+            if (outputUri == null){
+                Bundle extra = cameraIntent.getExtras();
+                outputUri = extra.getParcelable(MediaStore.EXTRA_OUTPUT);
+            }
             pickImages();
         }
     }
