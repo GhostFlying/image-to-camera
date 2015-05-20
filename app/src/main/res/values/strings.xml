@@ -7,4 +7,6 @@
     <string name="select_image">Select Image</string>
     <string name="io_exception_toast">Unfortunately, io exception occurred.</string>
     <string name="not_select_toast">Do not select any image.</string>
+
+    <string name="read_image_progress">Reading image, please wait.</string>
 </resources>

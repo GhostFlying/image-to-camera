@@ -1,9 +1,11 @@
 package com.ghostflying.image2camera;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -69,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
                     // copy images successfully.
                     setResult(Activity.RESULT_OK);
-                    finish();
                 }
                 finally {
                     inputStream.close();
@@ -87,7 +88,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleException(Exception e){
         e.printStackTrace();
-        Toast.makeText(this, R.string.io_exception_toast, Toast.LENGTH_SHORT).show();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, R.string.io_exception_toast, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void deleteFile(Uri file){
@@ -110,8 +116,30 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             if (resultCode == Activity.RESULT_OK){
-                saveFile(data.getData(), outputUri);
+                new SaveFileTask().execute(data.getData(), outputUri);
             }
+        }
+    }
+
+    private class SaveFileTask extends AsyncTask<Uri, Void, Void>{
+        DialogFragment dialogFragment;
+
+        @Override
+        protected void onPreExecute() {
+            dialogFragment = ImageReadDialogFragment.newInstance();
+            dialogFragment.show(getFragmentManager(), null);
+        }
+
+        @Override
+        protected Void doInBackground(Uri... params) {
+            saveFile(params[0], params[1]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result){
+            dialogFragment.dismiss();
+            finish();
         }
     }
 }
