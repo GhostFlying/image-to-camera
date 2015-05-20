@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="image_read_dialog_padding">30dp</dimen>
+
+    <dimen name="help_image_margin_top">30dp</dimen>
 </resources>
