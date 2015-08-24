@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 
 
-public class ImageReadDialogFragment extends DialogFragment {
+public class ImageReadDialogFragment extends LoadingDialogFragment {
 
     public static ImageReadDialogFragment newInstance() {
         return new ImageReadDialogFragment();
@@ -19,18 +19,8 @@ public class ImageReadDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState){
-        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_image_read_dialog, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setView(view);
-        Dialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(false);
-        return dialog;
+    protected View getCustomView() {
+        return getActivity().getLayoutInflater().inflate(R.layout.fragment_image_read_dialog, null);
     }
 
 }

@@ -12,4 +12,15 @@
     <string name="not_select_toast">Do not select any image.</string>
 
     <string name="read_image_progress">Reading image, please wait.</string>
+    
+    <string name="only_work_for_ingress">Only work for Ingress:</string>
+    <string name="default_camera_app">Default camera app</string>
+    <string name="click_to_choose">Click to choose</string>
+
+    <string name="positive_button">@android:string/ok</string>
+    <string name="negative_button">@android:string/cancel</string>
+    <string name="load_app_progress">Loading apps, please wait.</string>
+
+    <string name="dialog_title_app_choose">Choose default camera app</string>
+    <string name="toast_please_set_default_camera_app">Please set default camera app first.</string>
 </resources>

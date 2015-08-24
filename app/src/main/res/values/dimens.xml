@@ -6,4 +6,6 @@
     <dimen name="image_read_dialog_padding">30dp</dimen>
 
     <dimen name="help_image_margin_top">30dp</dimen>
+
+    <dimen name="app_choose_padding">10dp</dimen>
 </resources>
