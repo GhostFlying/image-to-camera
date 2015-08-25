@@ -37,6 +37,7 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity implements BaseAlertDialogFragment.OnFragmentInteractionListener {
     private static final int PICK_IMAGE = 10;
     private static final String IMAGE_TYPE = "image/*";
+    private static final String INGRESS_PACKAGE_NAME = "com.nianticproject.ingress";
 
     private Uri outputUri;
     private List<AppInfo> cameraApps;
@@ -57,36 +58,45 @@ public class MainActivity extends AppCompatActivity implements BaseAlertDialogFr
         loadWorkForIngress();
         Intent cameraIntent = getIntent();
         if (cameraIntent.getAction().equals(MediaStore.ACTION_IMAGE_CAPTURE)){
-            SharedPreferences preferences = getSharedPreferences(SettingUtil.SETTING_NAME, MODE_PRIVATE);
-            String packageName = preferences.getString(SettingUtil.DEFAULT_CAMERA_APP, null);
-            String activityName = preferences.getString(SettingUtil.DEFAULT_CAMERA_APP_ACTIVITY, null);
-
-            if (packageName == null || activityName == null){
-                Toast.makeText(this, R.string.toast_please_set_default_camera_app, Toast.LENGTH_SHORT).show();
-            }
-            else if (preferences.getBoolean(SettingUtil.ONLY_WORK_FOR_INGRESS, SettingUtil.DEFAULT_ONLY_WORK_FOR_INGRESS)){
-                ComponentName componentName = new ComponentName(packageName, activityName);
-                cameraIntent.setComponent(componentName);
-                cameraIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                startActivity(cameraIntent);
-                finish();
+            if (INGRESS_PACKAGE_NAME.equals(getCallingPackage())){
+                startPickImages(cameraIntent);
             }
             else {
+                SharedPreferences preferences = getSharedPreferences(SettingUtil.SETTING_NAME, MODE_PRIVATE);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-                    ClipData clipData = cameraIntent.getClipData();
-                    outputUri = clipData.getItemAt(0).getUri();
+                if (preferences.getBoolean(SettingUtil.ONLY_WORK_FOR_INGRESS, SettingUtil.DEFAULT_ONLY_WORK_FOR_INGRESS)){
+                    String packageName = preferences.getString(SettingUtil.DEFAULT_CAMERA_APP, null);
+                    String activityName = preferences.getString(SettingUtil.DEFAULT_CAMERA_APP_ACTIVITY, null);
+                    if (packageName == null || activityName == null){
+                        Toast.makeText(this, R.string.toast_please_set_default_camera_app, Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        ComponentName componentName = new ComponentName(packageName, activityName);
+                        cameraIntent.setComponent(componentName);
+                        cameraIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                        startActivity(cameraIntent);
+                        finish();
+                    }
                 }
-
-                // compatibility for system below lollipop
-                if (outputUri == null){
-                    Bundle extra = cameraIntent.getExtras();
-                    outputUri = extra.getParcelable(MediaStore.EXTRA_OUTPUT);
+                else {
+                    startPickImages(cameraIntent);
                 }
-                pickImages();
             }
-
         }
+    }
+
+    private void startPickImages(Intent cameraIntent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            ClipData clipData = cameraIntent.getClipData();
+            outputUri = clipData.getItemAt(0).getUri();
+        }
+
+        // compatibility for system below lollipop
+        if (outputUri == null){
+            Bundle extra = cameraIntent.getExtras();
+            outputUri = extra.getParcelable(MediaStore.EXTRA_OUTPUT);
+        }
+        pickImages();
     }
 
     @OnClick(R.id.app_choose)
