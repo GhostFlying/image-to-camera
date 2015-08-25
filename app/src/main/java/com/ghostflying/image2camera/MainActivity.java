@@ -67,7 +67,8 @@ public class MainActivity extends AppCompatActivity implements BaseAlertDialogFr
             else if (preferences.getBoolean(SettingUtil.ONLY_WORK_FOR_INGRESS, SettingUtil.DEFAULT_ONLY_WORK_FOR_INGRESS)){
                 ComponentName componentName = new ComponentName(packageName, activityName);
                 cameraIntent.setComponent(componentName);
-                startActivityForResult(cameraIntent, 0);
+                cameraIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                startActivity(cameraIntent);
                 finish();
             }
             else {
