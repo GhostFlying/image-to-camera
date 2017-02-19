@@ -15,50 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:textStyle="bold"
-                android:text="@string/only_work_for_ingress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <Space
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-
-            <CheckBox
-                android:id="@+id/checkbox_only_work_for_ingress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/app_choose"
-            android:background="@drawable/setting_item_bg"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/app_choose_padding"
-            android:paddingBottom="@dimen/app_choose_padding">
-
-            <TextView
-                android:textStyle="bold"
-                android:text="@string/default_camera_app"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/default_app"
-                android:text="@string/click_to_choose"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
 
         <View
             xmlns:android="http://schemas.android.com/apk/res/android"
