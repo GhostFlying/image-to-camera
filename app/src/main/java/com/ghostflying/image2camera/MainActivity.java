@@ -1,8 +1,10 @@
 package com.ghostflying.image2camera;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,6 +14,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
@@ -25,6 +31,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final int PICK_IMAGE = 10;
     private static final String IMAGE_TYPE = "image/*";
+
+    private static final int REQUEST_PERMISSION_WRITE_EXTERNAL = 100;
 
     private Uri outputUri;
     private List<AppInfo> cameraApps;
@@ -42,15 +50,78 @@ public class MainActivity extends AppCompatActivity {
     private void startPickImages(Intent cameraIntent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ClipData clipData = cameraIntent.getClipData();
-            outputUri = clipData.getItemAt(0).getUri();
+            if (clipData != null) {
+                outputUri = clipData.getItemAt(0).getUri();
+            }
         }
 
         // compatibility for system below lollipop
         if (outputUri == null) {
             Bundle extra = cameraIntent.getExtras();
-            outputUri = extra.getParcelable(MediaStore.EXTRA_OUTPUT);
+            if (extra != null) {
+                outputUri = extra.getParcelable(MediaStore.EXTRA_OUTPUT);
+            }
         }
-        pickImages();
+
+        if (outputUri == null) {
+            Toast.makeText(this, R.string.not_support_message, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (requestPermissionIfNeeded()) {
+            pickImages();
+        }
+    }
+
+    private boolean requestPermissionIfNeeded() {
+        if ("content".equals(outputUri.getScheme())) {
+            return true;
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                        .setMessage(R.string.permission_write_external_message)
+                        .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(
+                                        MainActivity.this,
+                                        new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        REQUEST_PERMISSION_WRITE_EXTERNAL
+                                );
+                            }
+                        });
+                builder.create().show();
+            }
+            else {
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_PERMISSION_WRITE_EXTERNAL
+                );
+            }
+        }
+        else {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_WRITE_EXTERNAL:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    pickImages();
+                }
+                break;
+        }
     }
 
     private void pickImages() {

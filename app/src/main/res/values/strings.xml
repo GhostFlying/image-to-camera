@@ -24,4 +24,9 @@
 
     <string name="dialog_title_app_choose">Choose default camera app</string>
     <string name="toast_please_set_default_camera_app">Please set default camera app first.</string>
+
+    <string name="permission_write_external_message">The app must have permission to external storage due to the caller use it.</string>
+    <string name="confirm">Confirm</string>
+
+    <string name="not_support_message">This method is not supported now and maybe added later.</string>
 </resources>
