@@ -1,4 +1,4 @@
-package com.ghostflying.image2camera;
+package org.mistkeith.image2camera;
 
 /**
  * Created by ghostflying on 15-8-25.

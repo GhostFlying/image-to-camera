@@ -1,4 +1,4 @@
-package com.ghostflying.image2camera;
+package org.mistkeith.image2camera;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by ghostflying on 15-8-24.
  */
-public class SingleChooseDialogFragment extends BaseAlertDialogFragment {
+public class SingleChooseDialogFragment extends org.mistkeith.image2camera.BaseAlertDialogFragment {
     // the fragment initialization parameters
     private static final String ARG_TITLE = "title";
     private static final String ARG_ITEMS = "items";
