@@ -1,7 +1,8 @@
-package com.ghostflying.image2camera;
+package org.mistkeith.image2camera;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.ClipData;
 import android.content.DialogInterface;
@@ -17,10 +18,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -122,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void pickImages() {
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            dialogFragment = AppLoadingDialogFragment.newInstance();
+            dialogFragment = org.mistkeith.image2camera.AppLoadingDialogFragment.newInstance();
             dialogFragment.show(getFragmentManager(), null);
         }
 
@@ -237,17 +237,15 @@ public class MainActivity extends AppCompatActivity {
             cameraApps = new ArrayList<>(pkgAppsList.size());
             appNames = new ArrayList<>(pkgAppsList.size());
             for (ResolveInfo each : pkgAppsList) {
-                if (!each.activityInfo.packageName.equals(BuildConfig.APPLICATION_ID)) {
-                    AppInfo info = new AppInfo();
-                    info.appName = each.loadLabel(packageManager).toString();
-                    info.activityName = each.activityInfo.name;
-                    info.packageName = each.activityInfo.packageName;
-                    cameraApps.add(info);
-                    appNames.add(info.appName);
+                AppInfo info = new AppInfo();
+                info.appName = each.loadLabel(packageManager).toString();
+                info.activityName = each.activityInfo.name;
+                info.packageName = each.activityInfo.packageName;
+                cameraApps.add(info);
+                appNames.add(info.appName);
 
-                    if (defaultApp != null && info.activityName.equals(defaultApp)) {
-                        checked = cameraApps.size() - 1;
-                    }
+                if (defaultApp != null && info.activityName.equals(defaultApp)) {
+                    checked = cameraApps.size() - 1;
                 }
             }
             return null;

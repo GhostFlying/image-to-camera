@@ -1,4 +1,4 @@
-package com.ghostflying.image2camera;
+package org.mistkeith.image2camera;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
